@@ -19,10 +19,10 @@ from matplotlib_venn import venn2, venn3, venn2_circles, venn3_circles
 
 from Bio import SeqIO
 from hierarchical_report_parser import *
+from utils import *
 
-aa_weights = { 
-    'X': 110, 'A': 89, 'R': 174, 'N': 132, 'D': 133, 'C': 121, 'E': 147, 'Q': 146,
-    'G': 75, 'H': 155, 'I': 131, 'L':131,'K': 146, 'M': 149, 'F': 165, 'P': 115,
-    'S': 105, 'T': 119, 'W': 204, 'Y': 181,'V': 117
-}
+# Make a list of ref seq
+refseqs = []
+for line in SeqIO.parse("human-openprot-r1_6-refprots-+uniprot2019_03_01.fasta", "fasta"):
+    refseqs.append(str(line.seq))
 
