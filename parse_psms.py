@@ -32,11 +32,12 @@ if os.path.exists('bioplex_PSreport_paths.pkl'):
 else:
     exp_report_paths = {}
     search_paths = ['/home/xroucou_group/analysis/mass_spec/reanalysis_r1.6/BioPlex_1/', '/home/xroucou_group/analysis/mass_spec/reanalysis_r1.6/BioPlex_2/']
-    for dirpath, subdirs, files in os.walk(search_path):
-        for f in files:
-            if 'BioPlex' in dirpath and 'Default_Hierarchical_Report' in f:
-                exp_id = f.split('_')[0]
-                exp_report_paths[exp_id] = os.path.join(dirpath, f)
+    for search_path in search_paths:
+        for dirpath, subdirs, files in os.walk(search_path):
+            for f in files:
+                if 'BioPlex' in dirpath and 'Default_Hierarchical_Report' in f:
+                    exp_id = f.split('_')[0]
+                    exp_report_paths[exp_id] = os.path.join(dirpath, f)
     pickle.dump(exp_report_paths, open('bioplex_PSreport_paths.pkl', 'wb'))
 
 def get_protgrp_psms(fpath):
