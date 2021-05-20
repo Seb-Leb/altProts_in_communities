@@ -1,4 +1,5 @@
 import os
+import csv
 import pickle
 import itertools as itt
 from Bio import SeqIO
