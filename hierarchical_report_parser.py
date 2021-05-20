@@ -2,7 +2,6 @@
 import csv
 import itertools
 
-
 class ParsedRow(object):
 
     row = None
