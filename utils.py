@@ -151,6 +151,28 @@ batch_n_wells = {batch:len(set(x[2] for x in grp)) for batch,grp in itt.groupby(
 bait_batch_dict = {bait:batch for _,batch,_,_,bait,_ in baits_exps}
 all_baits = list(bait_rep_dict.keys())
 
+BP_noFilters_dtypes = {
+    'CompPASS_ID':int,
+    'bait_symbol':str,
+    'bait_geneid':str,
+    'db_protein_id':str,
+    'symbol':str,
+    'prot_description':str,
+    'gene_id':int,
+    'ave_apsm':float,
+    'nwdscore':float,
+    'zscore':float,
+    'plate_zscore':float,
+    'entropy':float,
+    'uPeps':int,
+    'ratio':float,
+    'total_psms':int,
+    'ratioTotalPSMs':float,
+    'UtoTratio':float,
+    'pWrongID':float,
+    'pNoInt':float,
+    'pInt':float
+}
 if all(os.path.exists(x) for x in ['BP_noFilters.pkl', 'BP_preys_per_bait.pkl', 'BP2_unflt_psms.pkl']):
     BP_noFilters      = pickle.load(open('BP_noFilters.pkl', 'rb'))
     BP_preys_per_bait = pickle.load(open('BP_preys_per_bait.pkl', 'rb'))
@@ -166,7 +188,7 @@ else:
             
             for i in line:
                 if not line[i]:continue
-                line[i] = dtypes[i](line[i])
+                line[i] = BP_noFilters_dtypes[i](line[i])
                 
             BP_noFilters.append(line)
             if line['bait_symbol'] not in BP_preys_per_bait:
@@ -182,3 +204,4 @@ else:
     pickle.dump(BP_noFilters, open('BP_noFilters.pkl', 'wb'))
     pickle.dump(BP_preys_per_bait, open('BP_preys_per_bait.pkl', 'wb'))
     pickle.dump(BP2_unflt_psms, open('BP2_unflt_psms.pkl', 'wb'))
+
