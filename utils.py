@@ -86,7 +86,7 @@ else:
                 cols=row
                 continue
             line=dict(zip(cols,row))
-            for prot_acc in line['protein accession numbers'].split(';'):
+            for prot_acc in line['protein accession (others)'].split(';'):
                 prot_gene_dict[prot_acc.split('.')[0]] = line['gene symbol']
     pickle.dump(prot_gene_dict, open('prot_gene_dict.pkl', 'wb'))
 
