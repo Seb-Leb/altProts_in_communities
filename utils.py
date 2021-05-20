@@ -93,7 +93,7 @@ if os.path.exists('protgene_len_dict.pkl'):
     protgene_len_dict = pickle.load(open('protgene_len_dict.pkl', 'rb'))
 else:
     protgene_len_dict = {}
-    for record in SeqIO.parse('uman-openprot-r1_6-refprots+altprots+isoforms-+uniprot2019_03_01.fasta', 'fasta'):
+    for record in SeqIO.parse('human-openprot-r1_6-refprots+altprots+isoforms-+uniprot2019_03_01.fasta', 'fasta'):
         header = parse_fasta_header(record.description)
         gene = header['GN']
         prot_len = len(str(record.seq))
