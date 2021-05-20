@@ -178,6 +178,8 @@ if all(os.path.exists(x) for x in ['BP_noFilters.pkl', 'BP_preys_per_bait.pkl', 
     BP_preys_per_bait = pickle.load(open('BP_preys_per_bait.pkl', 'rb'))
     BP2_unflt_psms    = pickle.load(open('BP2_unflt_psms.pkl', 'rb'))
 else:
+    BP_preys_per_bait = {}
+    BP_noFilters = []
     with open('BaitPreyPairs_noFilters_BP2a.tsv', 'r') as f:
         for n,l in enumerate(f):
             ls = l.strip().split('\t')
