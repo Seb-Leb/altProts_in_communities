@@ -64,7 +64,6 @@ def get_protgrp_psms(fpath):
             
             protgrp_isalt = False
             if all(tt_type_isalt):
-                if altpep_in_missingrefs(pep_seq): continue  # check peptide against uniprot missing refs from OP 1.4
                 protgrp_isalt = True
                 if 'alt' not in prot_grp_id:
                     prot_grp_id = prot_grp_id+'_alt'
