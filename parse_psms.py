@@ -53,6 +53,7 @@ def get_protgrp_psms(fpath):
             for p in peptide.peptide_names:
                 fasta_header = parse_fasta_header(p)
                 if 'PA' in fasta_header:
+                    if fasta_header['PA'] not in prot_gene_dict: continue
                     prot_accs_genes.append((fasta_header['PA'], prot_gene_dict[fasta_header['PA']]))
                 else:
                     prot_accs_genes.append((prot_grp_acc, prot_gene_dict[prot_grp_acc]))
