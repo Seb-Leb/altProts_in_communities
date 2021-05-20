@@ -3,6 +3,7 @@ import pickle
 import itertools as itt
 from Bio import SeqIO
 
+
 aa_weights = { 
     'X': 110, 'A': 89, 'R': 174, 'N': 132, 'D': 133, 'C': 121, 'E': 147, 'Q': 146,
     'G': 75, 'H': 155, 'I': 131, 'L':131,'K': 146, 'M': 149, 'F': 165, 'P': 115,
