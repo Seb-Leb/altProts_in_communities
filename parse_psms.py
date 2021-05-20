@@ -19,7 +19,7 @@ from matplotlib_venn import venn2, venn3, venn2_circles, venn3_circles
 
 from Bio import SeqIO
 from altProts_in_communities.hierarchical_report_parser import *
-from utils import *
+from altProts_in_communities.utils import *
 
 # Make a list of ref seq
 refseqs = []
