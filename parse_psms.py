@@ -177,3 +177,94 @@ def get_all_psms(bait):
     #return psms
     #pickle.dump(psms, open('bioplex_psms/{}_psms.pkl'.format(bait), 'wb'))
     return psms
+
+def get_HPP_peps(alt_acc, peps):
+    prot_seq = altprotseq_dict[alt_acc]
+    peps = [p for p in list(peps) if len(p)>8] # min 9aas
+    
+    pep_locs = []
+    for pep in peps:
+        pep_start = prot_seq.index(pep)
+        pep_end   = pep_start + len(pep)
+        pep_locs.append((pep_start, pep_end))
+    
+    pep_ranges = []
+    pep_start, pep_end = 0, 0
+    for n, pep_loc in enumerate(sorted(pep_locs)):
+        pep_start, pep_end = pep_loc
+        if n==0 or pep_start>=prev_pep_end:
+            pep_range = [pep_loc]
+        elif pep_start<prev_pep_end:
+            pep_range.append(pep_loc)
+            prev_pep_start, prev_pep_end = pep_loc
+            continue
+        pep_ranges.append(pep_range)
+        prev_pep_start, prev_pep_end = pep_loc
+        
+    HPP_peps = []
+    for pep_range in pep_ranges:
+        pep_start, pep_end = max(pep_range, key=lambda x: x[0]-x[1])
+        HPP_peps.append(prot_seq[pep_start:pep_end])
+    return HPP_peps
+
+def get_nonnested_peps(alt_acc, peps, margin=2):
+    prot_seq = altprotseq_dict[alt_acc]
+    peps = [p for p in list(peps) if len(p)>8] # min 9aas
+    
+    pep_len_locs = []
+    for pep in peps:
+        pep_start = prot_seq.index(pep)
+        pep_end   = pep_start + len(pep)
+        pep_len_locs.append({
+            'pep':pep, 
+            'len':len(pep), 
+            'start':pep_start, 
+            'end':pep_end
+        })
+    
+    pep_len_locs = sorted(pep_len_locs, key=lambda x: x['len'])
+    non_nested = []
+    for n, pep_len_loc in enumerate(pep_len_locs):
+        nested = False
+        for longer_pep in pep_len_locs[n+1:]:
+            if np.abs(np.diff([pep_len_loc['start'], longer_pep['start']]))<margin or np.abs(np.diff([pep_len_loc['end'], longer_pep['end']]))<margin:
+                nested = True
+                break
+        if not nested:
+            non_nested.append(pep_len_loc['pep'])
+    return non_nested
+
+def get_coverage(alt_acc, peps):
+    prot_seq = altprotseq_dict[alt_acc]
+    seq_aa = np.zeros(len(prot_seq))
+    for pep in peps:
+        pep_start = prot_seq.index(pep)
+        pep_end   = pep_start + len(pep)
+        seq_aa[pep_start:pep_end] += np.array([1]*len(pep))
+    return sum(aa>0 for aa in seq_aa)/len(prot_seq)
+
+def pepset_is_HPP(alt_acc, peps):
+    prot_seq = altprotseq_dict[alt_acc]
+    peps = [p for p in list(peps) if len(p)>8] # min 9aas
+    
+    pep_locs = {}
+    for pep in peps:
+        pep_start = prot_seq.index(pep)
+        pep_locs[pep] = (pep_start, pep_start + len(pep))
+    
+    pep_pairs = [tuple(x) for x in list(set(frozenset(x) for x in itt.permutations(peps, 2))) if len(x)>1]
+    pep_pairs_locs = [sorted([pep_locs[pep] for pep in pep_pair]) for pep_pair in pep_pairs]
+    
+    no_overlap_pairs, overlap_pairs = [], []
+    for pep_pair in pep_pairs_locs:
+        if pep_pair[0][1]<pep_pair[1][0]:# non-overlapping pairs
+            no_overlap_pairs.append(pep_pair)
+        else:# overlapping pairs
+            overlap_pairs.append(pep_pair)
+    valid_overlap_pairs = [pep_pair for pep_pair in overlap_pairs if np.abs(np.diff([pep_pair[0][0], pep_pair[1][1]]))>17]
+    
+    if len(no_overlap_pairs)>0 or len(valid_overlap_pairs)>0:
+        return True
+    
+    return False
+
