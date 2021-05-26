@@ -58,7 +58,7 @@ class ComppassPlus:
 
     def get_training_data(self, batch):
         X,y = [], []
-        for b in all_batches:
+        for b in self.all_batches:
             if batch == b: continue # exclude a batch's data from its training set
             bp, v, t = self.get_batch_data(b, training=False)
             mask = [not is_alt(x[1]) for x in bp]
@@ -96,6 +96,6 @@ class ComppassPlus:
         return [(batch, *bp, t, res) for bp, t, res in zip(bp, t, res)]
 
     def predict_all(self):
-        with Pool(12) as p:
+        with Pool(8) as p:
             results = p.map(self.predict, self.all_batches)
         return [x for y in results for x in y]
