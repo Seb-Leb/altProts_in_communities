@@ -30,6 +30,20 @@ def get_bioplex_network(baits=None):
 
 G_b, G_b_edges = get_bioplex_network()
 
+def get_BP3_network(file_path):
+    bp3_net = set()
+    with open(file_path, 'r') as f:
+        reader = csv.reader(f, delimiter='\t', quotechar='"')
+        for n,l in enumerate(reader):
+            if n==0:
+                keys = l
+                continue
+            line = dict(zip(keys, l))
+            bp3_net.add(frozenset((line['SymbolA'], line['SymbolB'])))
+    return bp3_net
+
+bp3_net = get_BP3_network('BioPlex_293T_Network_10K_Dec_2019.tsv')
+
 class ThresholdSelect:
     def __init__(self, features_pkl_path, BP_edges, thresholds):
         self.predictions = pickle.load(open(features_pkl_path, 'rb'))
