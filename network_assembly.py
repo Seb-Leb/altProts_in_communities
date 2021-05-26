@@ -8,6 +8,28 @@ from matplotlib_venn import venn2, venn3, venn2_circles, venn3_circles
 
 from altProts_in_communities.utils import is_alt
 
+def get_bioplex_network(baits=None):
+    G_b = nx.Graph()
+    with open('BioPlex_interactionList_v4a.tsv', 'r') as f:
+        for n,l in enumerate(f):
+            ls = l.strip().split('\t')
+            if n==0:
+                keys = ls
+                continue
+            line = dict(zip(keys, ls))
+            if baits is not None:
+                if line['SymbolA'] in baits or line['SymbolB'] in baits:
+                    G_b.add_edge(line['SymbolA'], line['SymbolB'])
+            else:
+                G_b.add_edge(line['SymbolA'], line['SymbolB'])
+
+    G_b_edges = set()
+    for e in G_b.edges:
+        G_b_edges.add(frozenset(e))
+    return G_b, G_b_edges
+
+G_b, G_b_edges = get_bioplex_network()
+
 class ThresholdSelect:
     def __init__(self, features_pkl_path, BP_edges, thresholds):
         self.predictions = pickle.load(open(features_pkl_path, 'rb'))
