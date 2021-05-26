@@ -96,6 +96,6 @@ class ComppassPlus:
         return [(batch, *bp, t, res) for bp, t, res in zip(bp, t, res)]
 
     def predict_all(self):
-    with Pool(12) as p:
-        results = p.map(self.predict, self.all_batches)
-    return [x for y in results for x in y]
+        with Pool(12) as p:
+            results = p.map(self.predict, self.all_batches)
+        return [x for y in results for x in y]
