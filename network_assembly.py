@@ -8,14 +8,15 @@ from matplotlib import pyplot as plt
 from altProts_in_communities.utils import is_alt
 
 class ThresholdSelect:
-    def __init__(self, features_pkl_path, BP_edges):
+    def __init__(self, features_pkl_path, BP_edges, thresholds):
         self.predictions = pickle.load(open(features_pkl_path, 'rb'))
         self.BP_edges = BP_edges # set of frozensets
+        self.thresholds = thresholds
 
     def draw(self):
         scores = [x for x in self.scores if type(x)==tuple]
         jacc, recall, precision, fscore = zip(*self.scores)
-        thresholds = thresholds[:len(self.scores)]
+        thresholds = self.thresholds[:len(self.scores)]
 
         fig, ax = plt.subplots(figsize=(5,5))
         ax.plot(thresholds, fscore, label='Fscore', color='#7A3350')
@@ -28,10 +29,10 @@ class ThresholdSelect:
         plt.legend()
         plt.show()
 
-    def explore_thresholds(self, thresholds):
+    def explore_thresholds(self):
         scores = []
         with Pool(8) as p:
-            scores = p.map(self.compute_metrics_at_thres, thresholds)
+            scores = p.map(self.compute_metrics_at_thres, self.thresholds)
         self.scores = scores
 
     def compute_recall(self, HCIP, ref_edges_set):
