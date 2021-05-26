@@ -80,3 +80,19 @@ class ThresholdSelect:
         fscore    = self.compute_f1(G_o_edges, self.BP_edges)
         
         return jacc, recall, precision, fscore
+
+def tt_type_node_attrs(G):    
+    node_attrs = {}
+    for n in G.nodes():
+        node_attrs[n] = {}
+        if is_alt(n):
+            node_attrs[n]['tt_type'] = 'alt'
+            node_attrs[n]['node_type'] = 'alt-prey'
+        else:
+            node_attrs[n]['tt_type'] = 'ref'
+            if n in HCIP_baits:
+                node_attrs[n]['node_type'] = 'ref-bait'
+            else:
+                node_attrs[n]['node_type'] = 'ref-prey'
+
+    return node_attrs
