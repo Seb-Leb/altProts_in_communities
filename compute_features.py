@@ -1,23 +1,13 @@
 import re
 import sys
 import pandas as pd
+import numpy as np
 from tqdm import tqdm
 from scipy.stats import binom_test
 import statsmodels.api as sm
 from multiprocessing import Pool
 
 feats = ['Z', 'WD', 'batch_Z', 'Entropy', 'Ratio', 'total_PSMs', 'ratio_total_PSMs', 'pep_ratio']
-
-def compute_batch_dist(prey_prey_batches):
-    prey, prey_batches = prey_prey_batches
-    batch_prey_psm_dist = {}
-    for batch in prey_batches[prey]:
-        psm_ls = batch_prey_psms[batch][prey]
-        if all(x == psm_ls[0] for x in psm_ls): 
-            psm_ls[0] += 0.5
-        psms = psm_ls + [0]*(batch_n_wells[batch] - len(psm_ls))
-        batch_prey_psm_dist[(batch, prey)] = (np.mean(psms), np.std(psms))
-    return batch_prey_psm_dist
 
 def batch_Z(batch, prey, psm, dist_dict):
     u, se = dist_dict[batch, prey]
