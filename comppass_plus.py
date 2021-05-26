@@ -8,6 +8,7 @@ import numpy as np
 from sklearn.naive_bayes import GaussianNB
 from orderedset import OrderedSet
 from multiprocessing import Pool
+from altProts_in_communities.utils import is_alt
 
 # column data types for feature table
 columns_dtypes = {
