@@ -73,8 +73,8 @@ class ThresholdSelect:
         union = G_o_edges.union(self.BP_edges)
         
         jacc      = len(intersection)/len(union)
-        recall    = compute_recall(G_o_edges, self.BP_edges)
-        precision = compute_precision(G_o_edges, self.BP_edges)
-        fscore    = compute_f1(G_o_edges, self.BP_edges)
+        recall    = self.compute_recall(G_o_edges, self.BP_edges)
+        precision = self.compute_precision(G_o_edges, self.BP_edges)
+        fscore    = self.compute_f1(G_o_edges, self.BP_edges)
         
         return jacc, recall, precision, fscore
