@@ -5,6 +5,8 @@ import networkx as nx
 from multiprocessing import Pool
 from matplotlib import pyplot as plt
 
+from altProts_in_communities.utils import is_alt
+
 class ThresholdSelect:
     def __init__(self, features_pkl_path, BP_edges):
         self.predictions = pickle.load(open(features_pkl_path, 'rb'))
@@ -67,12 +69,12 @@ class ThresholdSelect:
         G_o_noalt.add_edges_from([(x[0], x[1]) for x in HCIP_net if not is_alt(x[1])])
         G_o_noalt.remove_edges_from(nx.selfloop_edges(G_o_noalt))
         G_o_edges = set(frozenset(e) for e in G_o_noalt.edges)
-        intersection = G_o_edges.intersection(G_b_edges)
-        union = G_o_edges.union(G_b_edges)
+        intersection = G_o_edges.intersection(self.BP_edges)
+        union = G_o_edges.union(self.BP_edges)
         
         jacc      = len(intersection)/len(union)
-        recall    = compute_recall(G_o_edges, G_b_edges)
-        precision = compute_precision(G_o_edges, G_b_edges)
-        fscore    = compute_f1(G_o_edges, G_b_edges)
+        recall    = compute_recall(G_o_edges, self.BP_edges)
+        precision = compute_precision(G_o_edges, self.BP_edges)
+        fscore    = compute_f1(G_o_edges, self.BP_edges)
         
         return jacc, recall, precision, fscore
