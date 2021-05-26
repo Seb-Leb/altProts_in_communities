@@ -4,6 +4,7 @@ import numpy as np
 import networkx as nx
 from multiprocessing import Pool
 from matplotlib import pyplot as plt
+from matplotlib_venn import venn2, venn3, venn2_circles, venn3_circles
 
 from altProts_in_communities.utils import is_alt
 
