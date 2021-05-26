@@ -1,12 +1,14 @@
 
 import pickle
 import numpy as np
+import networkx as nx
 from multiprocessing import Pool
 from matplotlib import pyplot as plt
 
 class ThresholdSelect:
-    def __init__(self, features_pkl_path):
+    def __init__(self, features_pkl_path, BP_edges):
         self.predictions = pickle.load(open(features_pkl_path, 'rb'))
+        self.BP_edges = BP_edges # set of frozensets
 
     def draw(self):
         scores = [x for x in self.scores if type(x)==tuple]
@@ -51,7 +53,7 @@ class ThresholdSelect:
 
     def compute_metrics_at_thres(self, thres):
         HCIP = []
-        for pred in bp_predictions_9d:
+        for pred in self.predictions:
             batch, bait, prey, target, pnoint_pint = pred
             if bait==prey:continue
             if pnoint_pint[1] < thres: continue # select only intercations over pint threshold of input thres
