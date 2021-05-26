@@ -47,8 +47,8 @@ class ThresholdSelect:
         return len(TP)/(len(TP) + len(FP))
 
     def compute_f1(self, HCIP, ref_edges_set):
-        recall    = compute_recall(HCIP, ref_edges_set)
-        precision = compute_precision(HCIP, ref_edges_set)
+        recall    = self.compute_recall(HCIP, ref_edges_set)
+        precision = self.compute_precision(HCIP, ref_edges_set)
         if recall + precision == 0 :
             return 0.
         return (2 * recall * precision) / (recall + precision)
@@ -58,7 +58,7 @@ class ThresholdSelect:
         for pred in self.predictions:
             batch, bait, prey, target, pnoint_pint = pred
             if bait==prey:continue
-            if pnoint_pint[1] < thres: continue # select only intercations over pint threshold of input thres
+            if pnoint_pint[1] < thres: continue # select only interactions over pint threshold of input thres
             HCIP.append(pred)
         
         HCIP_net = []
