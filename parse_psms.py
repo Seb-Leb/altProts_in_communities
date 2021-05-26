@@ -21,8 +21,6 @@ import pandas as pd
 import itertools as itt
 
 from multiprocessing import Pool, Process, Queue
-from scipy.stats import binom_test
-import statsmodels.api as sm
 import pandas as pd
 
 from matplotlib import pyplot as plt
