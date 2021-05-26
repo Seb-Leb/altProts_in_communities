@@ -103,7 +103,7 @@ class ThresholdSelect:
         
         return jacc, recall, precision, fscore
 
-def tt_type_node_attrs(G):    
+def tt_type_node_attrs(G, HCIP_baits):    
     node_attrs = {}
     for n in G.nodes():
         node_attrs[n] = {}
