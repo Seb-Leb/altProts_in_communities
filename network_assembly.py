@@ -1,5 +1,6 @@
 
 import pickle
+import csv
 import numpy as np
 import networkx as nx
 from multiprocessing import Pool
