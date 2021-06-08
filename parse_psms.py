@@ -62,7 +62,6 @@ def get_protgrp_psms(fpath):
             for p in peptide.peptide_names:
                 fasta_header = parse_fasta_header(p)
                 if 'PA' in fasta_header:
-                    #if fasta_header['PA'] not in prot_gene_dict: continue
                     prot_accs_genes.append((fasta_header['PA'], prot_gene_dict[fasta_header['PA']]))
                 else:
                     prot_accs_genes.append((prot_grp_acc, prot_gene_dict[prot_grp_acc]))
@@ -172,7 +171,6 @@ def get_all_psms(bait):
     for exp_id, exp in psms[bait]['exps'].items(): # assign PSMs to prot groups, single gene and multigene
         exp['psms'] = get_multigene_psms(exp['protgrp_psms_valid_clean'], bait)
         
-    #return psms
     #pickle.dump(psms, open('bioplex_psms/{}_psms.pkl'.format(bait), 'wb'))
     return psms
 
@@ -266,3 +264,19 @@ def pepset_is_HPP(alt_acc, peps):
     
     return False
 
+def get_pep_bait_rep_cnts(psms):
+    pep_bait_rep_cnts = {}
+    pep_reps = [(pep, spec.split('.')[0]) for pep, spec in psms]
+    pep_bait_reps = sorted([(pep, rep_bait_dict[rep], rep) for pep, rep in pep_reps])
+    for pep, pep_bait_rep_grp in itt.groupby(pep_bait_reps, lambda x: x[0]):
+        pep_bait_rep_ls = list(pep_bait_rep_grp)
+        pep_bait_rep_cnts[pep] = Counter([bait for pep, bait, rep in pep_bait_rep_ls])
+    return pep_bait_rep_cnts
+
+def get_bait_peps(psms):
+    bait_peps = {}
+    pep_reps = [(pep, spec.split('.')[0]) for pep, spec in psms]
+    bait_pep_reps = sorted([(rep_bait_dict[rep], pep, rep) for pep, rep in pep_reps])
+    for bait, bait_pep_rep_grp in itt.groupby(bait_pep_reps, key=lambda x: x[0]):
+        bait_peps[bait] = set(pep for bait, pep, rep in bait_pep_rep_grp)
+    return bait_peps
