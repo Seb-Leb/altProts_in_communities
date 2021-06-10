@@ -209,5 +209,114 @@ else:
     pickle.dump(BP_preys_per_bait, open('BP_preys_per_bait.pkl', 'wb'))
     pickle.dump(BP2_unflt_psms, open('BP2_unflt_psms.pkl', 'wb'))
 
+color_palette = {
+    'ref_prey': '#2582c6',
+    'ref_bait': '#093e63',
+    'alt': '#e76f51',
+    'light': '#D81159',
+    'yellow':'#9b7021',
+    'dark': '#093e63'
+    }
 
+def get_graph_vis(G,
+                  title,
+                  file_name=None,
+                  file_path=None,
+                  layout=None,
+                  layout_params={'k':0.15, 'iterations':20},
+                  figsize=None,
+                  pos=None,
+                  start_pos=None,
+                  fixed_nodes=None,
+                  return_pos=False,
+                  edge_alpha=1.0,
+                  edge_width=1.0,
+                  node_size=20,
+                  alt_node_size=15,
+                  graph_type='alt_bait_prey',
+                  min_source_margin=0,
+                  draw_labels=False,
+                  margin=0.1,
+                  include_ledgend=False,
+                  GO=None,
+                 ):
+    if figsize is None:
+        figsize = (10,4)
+    elif figsize == 'auto' and GO is not None:
+        leg_width_char = get_max_char_count(GO)
+        figsize = (4+0.18*leg_width_char, 4)
+    fig, ax = plt.subplots(figsize=figsize)
+    #options = {'node_color': 'black', 'node_size': 50, 'width': 1}
+    if pos is None:
+        if layout is not None:
+            pos = layout(G)
+        if start_pos is not None and fixed_nodes is not None:
+            pos = nx.spring_layout(G, pos=start_pos, fixed=fixed_nodes, k=layout_params['k'], iterations=layout_params['iterations'])
+        else:
+            pos = nx.spring_layout(G, k=layout_params['k'], iterations=layout_params['iterations'])
+        
+    nx.draw_networkx_edges(G, pos, edge_color='black', width=edge_width, alpha=edge_alpha, ax=ax)
+    
+    if GO is not None:
+        gene_go_count = get_gene_go_count(GO)
+        r=0.03
+        cycle_fact = lambda : itt.cycle([(r*np.cos(x), r*np.sin(x)) for x in range(0, 360, 45)])
+        gene_cir_pos = {gene:cycle_fact() for gene in gene_go_count}
+        legend_elements = []
+        gopos = pos.copy()
+        for GO_type, GO_terms in GO.items():
+            for GO_term in GO_terms:
+                study_items = GO_term['study_items'].split('|')
+                GO_color = next(GO_colors)
+                legend_elements.append(Line2D([0], [0], marker='o', label='{}\n{}'.format(GO_term['go_name'], GO_term['study_items']), color=GO_color))
+                for gene, count in gene_go_count.items():
+                    next(gene_cir_pos[gene])
+                    next(gene_cir_pos[gene])
+                    gopos[gene] = pos[gene]+next(gene_cir_pos[gene])
+                    gene_go_count[gene] -= 1
+                nx.draw_networkx_nodes(G, gopos,
+                                   nodelist=study_items,
+                                   node_color=GO_color,
+                                   node_size=node_size+(node_size*2.0),
+                                   ax=ax,
+                                    alpha=0.6
+                                      )
+        
+    nx.draw_networkx_nodes(G, pos,
+                       nodelist=[x for x,y in G.nodes(data=True) if y['tt_type']=='ref' and y['node_type']=='bait'],
+                       node_color=color_palette['ref_bait'],
+                       node_size=node_size,
+                       ax=ax)
 
+    nx.draw_networkx_nodes(G, pos,
+                       nodelist=[x for x,y in G.nodes(data=True) if y['tt_type']=='ref' and y['node_type']=='prey'],
+                       node_color=color_palette['ref_prey'],
+                       node_size=node_size,
+                       ax=ax)
+
+    nx.draw_networkx_nodes(G, pos,
+                       nodelist=[x for x,y in G.nodes(data=True) if y['tt_type']=='alt'],
+                       node_color=color_palette['light'],
+                       node_size=alt_node_size,
+                       ax=ax)
+
+    if draw_labels:
+        nx.draw_networkx_labels(G, pos, font_size=9, ax=ax)
+    
+    ax.axis('off')
+    
+    plt.margins(margin)
+    if file_name is not None and file_path is not None:
+        plt.savefig(file_path+file_name, dpi=600, transparent=True)
+    plt.show()
+    
+    if GO is not None and include_ledgend:
+        fig, ax = plt.subplots(figsize=(10, 3))
+        ax.legend(handles=legend_elements)
+        ax.axis('off')
+        ax.set_title(title)
+        plt.savefig(file_path+file_name.replace('.', '_legend.'), dpi=600, transparent=True)
+        plt.show()
+    if return_pos:
+        return file_name, file_name.replace('.', '_legend.'), pos
+    return file_name, file_name.replace('.', '_legend.')
