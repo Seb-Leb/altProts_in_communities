@@ -209,6 +209,27 @@ else:
     pickle.dump(BP_preys_per_bait, open('BP_preys_per_bait.pkl', 'wb'))
     pickle.dump(BP2_unflt_psms, open('BP2_unflt_psms.pkl', 'wb'))
 
+def get_2degneigb(G, node):
+    node_ls = []
+    for n1 in G.neighbors(node):
+        node_ls.append(n1)
+        for n2 in G.neighbors(n1):
+            node_ls.append(n2)
+    return nx.subgraph(G, node_ls)
+
+def get_second_neighb_betweeness(G, node):
+    G_neighb = get_2degneigb(G, node)
+    bet_cen = nx.betweenness_centrality(G_neighb)
+    return bet_cen[node]
+
+def get_second_neighb_evc(G, node):
+    G_neighb = get_2degneigb(G, node)
+    try:
+        evc = nx.eigenvector_centrality_numpy(G_neighb)
+        return evc[node]
+    except:
+        return 0
+
 color_palette = {
     'ref_prey': '#2582c6',
     'ref_bait': '#093e63',
