@@ -124,12 +124,12 @@ def tt_type_node_attrs(G, HCIP_baits):
         node_attrs[n] = {}
         if is_alt(n):
             node_attrs[n]['tt_type'] = 'alt'
-            node_attrs[n]['node_type'] = 'alt-prey'
+            node_attrs[n]['node_type'] = 'prey'
         else:
             node_attrs[n]['tt_type'] = 'ref'
             if n in HCIP_baits:
-                node_attrs[n]['node_type'] = 'ref-bait'
+                node_attrs[n]['node_type'] = 'bait'
             else:
-                node_attrs[n]['node_type'] = 'ref-prey'
+                node_attrs[n]['node_type'] = 'prey'
 
     return node_attrs
