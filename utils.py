@@ -4,7 +4,7 @@ import pickle
 import itertools as itt
 from Bio import SeqIO
 import networkx as nx
-from matlplotlib import pyplot as plt
+from matplotlib import pyplot as plt
 plt.rcParams['svg.fonttype'] = 'none'
 
 aa_weights = { 
