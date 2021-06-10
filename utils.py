@@ -3,7 +3,9 @@ import csv
 import pickle
 import itertools as itt
 from Bio import SeqIO
-
+import networkx as nx
+from matlplotlib import pyplot as plt
+plt.rcParams['svg.fonttype'] = 'none'
 
 aa_weights = { 
     'X': 110, 'A': 89, 'R': 174, 'N': 132, 'D': 133, 'C': 121, 'E': 147, 'Q': 146,
