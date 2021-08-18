@@ -16,7 +16,7 @@ The scored interactions are filtered, assembled into a network and compared with
 11. Network topological analysis<br/>
 Topological features or the resulting network are computed and visualized (degree distribution, average shortest paths, eigenvector centrality etc.). (full_network_features.ipynb)
 13. Clustering and functional analysis<br/>
-The network is partitioned with the markov clustering algorithm. Clusters are analyzed for enrichment of Gene Ontology terms (clustering_GO.ipynb). Disease associations are also computed for each cluster (disease_associations.ipynb).
+The network is partitioned with the [markov clustering algorithm](https://github.com/GuyAllard/markov_clustering). Clusters are analyzed for enrichment of Gene Ontology terms (clustering_GO.ipynb). Disease associations are also computed for each cluster (disease_associations.ipynb).
 
 ## Final notes
 These scripts and notebooks were run on a high performance computing platform with 24 cores and 256G of memory. Some adjustments may be necessary when less resources are available.
